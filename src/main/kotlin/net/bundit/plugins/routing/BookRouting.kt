@@ -7,7 +7,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import net.bundit.model.Book
 
-var books = listOf(
+var books = mutableListOf(
     Book.create("Unit Testing Principles, Practices, and Patterns", "Vladimir Khorikov"),
     Book.create("The Five Dysfunctions of a Team: A Leadership Fable", "Patrick M. Lencioni")
 )
@@ -28,9 +28,9 @@ fun Application.configureBookRouting() {
                 }
             }
             post("/books") {
-                val book = call.receive<Book>()
-                val newBook = book.copy(id = books.size)
-                books = books + newBook
+                val inputBook = call.receive<Book>()
+                val newBook = Book.create(inputBook)
+                books.add(newBook)
                 call.respond(HttpStatusCode.Created, newBook)
             }
             put("/books/{id}") {
@@ -45,8 +45,8 @@ fun Application.configureBookRouting() {
                     return@put
                 }
                 val newBook = call.receive<Book>()
-                books = books.filter { it.id != newBook.id }
-                books  = books + newBook
+                books.removeIf { it.id == newBook.id }
+                books.add(Book.copy(newBook))
                 call.respond(HttpStatusCode.NoContent)
             }
             delete("/books/{id}") {
@@ -60,7 +60,7 @@ fun Application.configureBookRouting() {
                     call.respond(HttpStatusCode.NotFound)
                     return@delete
                 }
-                books = books.filter { it.id != id.toInt() }
+                books.removeIf { it.id == id.toInt() }
                 call.respond(HttpStatusCode.NoContent)
             }
         }

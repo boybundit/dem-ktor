@@ -22,5 +22,6 @@ fun Application.configureRouting() {
         get("/error") {
             throw java.lang.RuntimeException("Error occurred")
         }
+
     }
 }
