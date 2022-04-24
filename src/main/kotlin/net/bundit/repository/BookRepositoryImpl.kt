@@ -47,13 +47,15 @@ class BookRepositoryImpl : BookRepository {
 
 val bookRepository: BookRepository = BookRepositoryImpl().apply {
     runBlocking {
-        if(findAllBooks().isEmpty()) {
+        if (findAllBooks().isEmpty()) {
             createBook(
                 "Unit Testing Principles, Practices, and Patterns",
-                "Vladimir Khorikov")
+                "Vladimir Khorikov"
+            )
             createBook(
                 "The Five Dysfunctions of a Team: A Leadership Fable",
-                "Patrick M. Lencioni")
+                "Patrick M. Lencioni"
+            )
 
         }
     }
