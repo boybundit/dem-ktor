@@ -1,8 +1,10 @@
-package net.bundit.plugins.routing
+package net.bundit.plugins
 
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import net.bundit.plugins.routing.configureBookApiRouting
+import net.bundit.plugins.routing.configureBookWebRouting
 
 fun Application.configureRouting() {
     routing {
