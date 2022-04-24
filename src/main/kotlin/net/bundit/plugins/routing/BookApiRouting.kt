@@ -12,7 +12,7 @@ var books = mutableListOf(
     Book.create("The Five Dysfunctions of a Team: A Leadership Fable", "Patrick M. Lencioni")
 )
 
-fun Application.configureBookRouting() {
+fun Application.configureBookApiRouting() {
     routing {
         route("/api") {
             get("/books") {
