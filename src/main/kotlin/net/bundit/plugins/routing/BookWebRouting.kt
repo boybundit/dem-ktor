@@ -6,6 +6,7 @@ import io.ktor.server.http.content.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
+import net.bundit.repository.bookRepository
 
 fun Application.configureBookWebRouting() {
     routing {
@@ -16,11 +17,11 @@ fun Application.configureBookWebRouting() {
         }
         route("/books") {
             get {
-                call.respond(FreeMarkerContent("books.ftl", mapOf("books" to books)))
+                call.respond(FreeMarkerContent("books.ftl", mapOf("books" to bookRepository.findAllBooks())))
             }
             get("{id}") {
                 val id = call.parameters.getOrFail<Int>("id").toInt()
-                call.respond(FreeMarkerContent("book.ftl", mapOf("book" to books.find { it.id == id })))
+                call.respond(FreeMarkerContent("book.ftl", mapOf("book" to bookRepository.findBook(id))))
             }
         }
     }
