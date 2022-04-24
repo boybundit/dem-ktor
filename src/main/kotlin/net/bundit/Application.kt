@@ -1,17 +1,16 @@
 package net.bundit
 
-import io.ktor.server.engine.*
-import io.ktor.server.netty.*
+import io.ktor.server.application.*
 import net.bundit.plugins.configureContentNegotiation
 import net.bundit.plugins.configureStatusPage
 import net.bundit.plugins.routing.configureBookRouting
 import net.bundit.plugins.routing.configureRouting
 
-fun main() {
-    embeddedServer(Netty, port = 8080, host = "0.0.0.0") {
-        configureContentNegotiation()
-        configureRouting()
-        configureBookRouting()
-        configureStatusPage()
-    }.start(wait = true)
+fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
+
+fun Application.module() {
+    configureContentNegotiation()
+    configureRouting()
+    configureBookRouting()
+    configureStatusPage()
 }

@@ -8,6 +8,7 @@ import io.ktor.server.config.*
 import io.ktor.server.testing.*
 import net.bundit.model.Book
 import net.bundit.plugins.configureContentNegotiation
+import net.bundit.plugins.routing.books
 import net.bundit.plugins.routing.configureBookRouting
 import net.bundit.plugins.routing.configureRouting
 import org.amshove.kluent.`should be`
@@ -27,14 +28,6 @@ object GetBooksSpec : Spek({
         it("should return a list of books") {
             testApplication {
                 // Given
-                application {
-                    configureContentNegotiation()
-                    configureRouting()
-                    configureBookRouting()
-                }
-                environment {
-                    config = MapApplicationConfig("ktor.environment" to "test")
-                }
                 val client = createClient {
                     install(io.ktor.client.plugins.contentnegotiation.ContentNegotiation) {
                         jackson()
@@ -43,8 +36,8 @@ object GetBooksSpec : Spek({
                 // When
                 val response = client.get("/api/books")
                 // Then
-                val books: Array<Book> = response.body()
                 response.status `should be` HttpStatusCode.OK
+                val books: Array<Book> = response.body()
                 books `should contain` book
             }
         }
