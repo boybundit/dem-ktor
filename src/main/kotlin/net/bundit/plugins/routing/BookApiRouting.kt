@@ -6,22 +6,18 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import net.bundit.model.Book
-
-var books = mutableListOf(
-    Book.create("Unit Testing Principles, Practices, and Patterns", "Vladimir Khorikov"),
-    Book.create("The Five Dysfunctions of a Team: A Leadership Fable", "Patrick M. Lencioni")
-)
+import net.bundit.repository.bookRepository
 
 fun Application.configureBookApiRouting() {
     routing {
         route("/api") {
             get("/books") {
-                call.respond(books)
+                call.respond(bookRepository.findAllBooks())
             }
             get("/books/{id}") {
                 try {
                     val id = call.parameters["id"]!!
-                    val book = books.find { it.id == id.toInt() }
+                    val book = bookRepository.findBook(id.toInt())
                     call.respond(book!!)
                 } catch (e: Throwable) {
                     call.respond(HttpStatusCode.NotFound)
@@ -29,8 +25,11 @@ fun Application.configureBookApiRouting() {
             }
             post("/books") {
                 val inputBook = call.receive<Book>()
-                val newBook = Book.create(inputBook)
-                books.add(newBook)
+                val newBook = bookRepository.createBook(inputBook.title, inputBook.author)
+                if (newBook == null) {
+                    call.respond(HttpStatusCode.InternalServerError)
+                    return@post
+                }
                 call.respond(HttpStatusCode.Created, newBook)
             }
             put("/books/{id}") {
@@ -39,14 +38,21 @@ fun Application.configureBookApiRouting() {
                     call.respond(HttpStatusCode.BadRequest)
                     return@put
                 }
-                val book = books.getOrNull(id.toInt())
+                val book = bookRepository.findBook(id.toInt())
                 if (book == null) {
                     call.respond(HttpStatusCode.NotFound)
                     return@put
                 }
                 val newBook = call.receive<Book>()
-                books.removeIf { it.id == newBook.id }
-                books.add(Book.copy(newBook))
+                val result = bookRepository.updateBook(
+                    id.toInt(),
+                    newBook.title,
+                    newBook.author
+                )
+                if (!result) {
+                    call.respond(HttpStatusCode.InternalServerError)
+                    return@put
+                }
                 call.respond(HttpStatusCode.NoContent)
             }
             delete("/books/{id}") {
@@ -55,12 +61,16 @@ fun Application.configureBookApiRouting() {
                     call.respond(HttpStatusCode.BadRequest)
                     return@delete
                 }
-                val book = books.getOrNull(id.toInt())
+                val book = bookRepository.findBook(id.toInt())
                 if (book == null) {
                     call.respond(HttpStatusCode.NotFound)
                     return@delete
                 }
-                books.removeIf { it.id == id.toInt() }
+                val result = bookRepository.deleteBook(id.toInt())
+                if (!result) {
+                    call.respond(HttpStatusCode.InternalServerError)
+                    return@delete
+                }
                 call.respond(HttpStatusCode.NoContent)
             }
         }
