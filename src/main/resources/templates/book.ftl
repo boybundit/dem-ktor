@@ -6,7 +6,7 @@
     <title>${book.title}</title>
 </head>
 <body class="m-2">
-    <h1 class="mt-2 mb-5 text-3xl font-bold">${book.title}</h1>
-    <p>${book.author}</p>
+<h1 class="mt-2 mb-5 text-3xl font-bold">${book.title}</h1>
+<p>${book.author}</p>
 </body>
 </html>
