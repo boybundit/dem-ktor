@@ -8,8 +8,8 @@ import io.ktor.server.routing.*
 import net.bundit.model.Book
 
 var books = listOf(
-    Book(0, "Unit Testing Principles, Practices, and Patterns", "Vladimir Khorikov"),
-    Book(1, "The Five Dysfunctions of a Team: A Leadership Fable", "Patrick M. Lencioni")
+    Book.create("Unit Testing Principles, Practices, and Patterns", "Vladimir Khorikov"),
+    Book.create("The Five Dysfunctions of a Team: A Leadership Fable", "Patrick M. Lencioni")
 )
 
 fun Application.configureBookRouting() {
