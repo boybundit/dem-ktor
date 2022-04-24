@@ -1,6 +1,8 @@
 package net.bundit
 
+import freemarker.cache.ClassTemplateLoader
 import io.ktor.server.application.*
+import io.ktor.server.freemarker.*
 import net.bundit.plugins.configureContentNegotiation
 import net.bundit.plugins.configureStatusPage
 import net.bundit.plugins.routing.configureBookRouting
@@ -13,4 +15,7 @@ fun Application.module() {
     configureRouting()
     configureBookRouting()
     configureStatusPage()
+    install(FreeMarker) {
+        templateLoader = ClassTemplateLoader(this::class.java.classLoader, "templates")
+    }
 }
